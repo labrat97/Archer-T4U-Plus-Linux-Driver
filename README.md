@@ -1,30 +1,13 @@
-# REALTEK RTL88x2B USB Linux Driver
-**Current Driver Version**: 5.13.1
-**Support Kernel**: 2.6.24 ~ 6.3 (with unofficial patches)
+# Archer T4U Plus Driver for Linux (rtl8822bu)
+### _Finally_, one that doesn't randomly disconnect.
 
-Linux in-tree rtw8822bu driver is working in process, check [this](https://lore.kernel.org/lkml/20220518082318.3898514-1-s.hauer@pengutronix.de/) patchset.
-
-Official release note please check ReleaseNotes.pdf
-
-**Note:** if you believe your device is **RTL8812BU** or **RTL8822BU** but after loaded the module no NIC shows up, the device ID maybe not in the driver whitelist. In this case please submit a new issue with `lsusb` result, and your device name, brand, website, etc.
+<br/>
 
 ## Linux 5.18+ and RTW88 Driver
-Starting from Linux 5.18, some distributions have added experimental RTW88 USB support (include RTW88x2BU support).
-It is not yet stable but if it works well on your system, then you no longer need this driver.
-But if it doesn't work or is unstable, you need to manually blacklist it because it has a higher loading priority than this external drivers.
+I'm just blacklisting it. I straight up don't want to deal with my WiFi radio
+failing anymore. Check out `archer-t4u.conf` in the repo's root directory.
 
-Check the currently loaded module using `lsmod`. If you see `rtw88_core`, `rtw88_usb`, or any name beginning with `rtw88_` then you are using the RTW88 driver.
-If you see `88x2bu` then you are using this RTW88x2BU driver.
-
-To blacklist RTW88 8822bu USB driver, run the following command:
-
-```
-echo "blacklist rtw88_8822bu" > /etc/modprobe.d/rtw8822bu.conf
-```
-
-And reboot your system.
-
-## Supported Devices
+## Technically Supported Devices
 <details>
   <summary>
     ASUS
@@ -104,43 +87,33 @@ And more.
 * You need rebuild the kernel module everytime you update/change the kernel if you are not using DKMS
 
 
-## Manual installation
-### Clean
-* Make sure you cleaned old build files before builds new one
+## Installing
+Elevate your permissions with `sudo` or `doas` or whatever, then from the root
+of the repository do:
 ```
-make clean
+cp -r ./ /usr/src/rtl88x2bu-t4u
+dkms add -m rtl88x2bu -v t4u
+dkms autoinstall
+cp ./archer-t4u.conf /etc/modprobe.d/.
 ```
-
-### Building module for current running kernel
-```
-make
-```
-
 ### Building module for other kernels
+You should know this is for advanced users only,
+**please don't just blindly copy paste this thinking it's part of the install process**.
 ```
 make KSRC=/lib/modules/YOUR_KERNEL_VERSION/build
 ```
 
-### Installing
+## Uninstalling
+Elevate your permissions with `sudo` or `doas` or whatever, then from the root
+of the repository do:
 ```
-sudo make install
-```
-
-### Uninstalling
-```
-sudo make uninstall
-```
-
-## Manual DKMS installation
-```
-git clone "https://github.com/RinCat/RTL88x2BU-Linux-Driver.git" /usr/src/rtl88x2bu-git
-sed -i 's/PACKAGE_VERSION="@PKGVER@"/PACKAGE_VERSION="git"/g' /usr/src/rtl88x2bu-git/dkms.conf
-dkms add -m rtl88x2bu -v git
-dkms autoinstall
+rm -r /usr/src/rtl88x2bu-t4u
+dkms uninstall -m rtl88x2bu -v t4u
+rm /etc/modprobe.d/archer-t4u.conf
 ```
 
 # USB 3.0 Support
-You can try use `modprobe 88x2bu rtw_switch_usb_mode=1` to force the adapter run under USB 3.0. But if your adapter/port/motherboard not support it, the driver will be in restart loop. Remove the parameter and reload the driver to restore. Alternatively, `modprobe 88x2bu rtw_switch_usb_mode=2` let\'s it run as USB 2 device.
+You can try use `modprobe 88x2bu rtw_switch_usb_mode=1` to force the adapter run under USB 3.0. But if your port/motherboard not support it, the driver will be in restart loop. Remove the parameter and reload the driver to restore. Alternatively, `modprobe 88x2bu rtw_switch_usb_mode=2` let\'s it run as USB 2 device.
 
 Notice: If you had already loaded the moduel, use `modprobe -r 88x2bu` to unload it first.
 
@@ -150,6 +123,3 @@ If you want to force a given mode permanently (even when switching the adapter a
 
 # Debug
 Set debug log use `echo 5 > /proc/net/rtl88x2bu/log_level` or `modprobe 88x2bu rtw_drv_log_level=5`
-
-# Distribution
-* Archlinux AUR https://aur.archlinux.org/packages/rtl88x2bu-dkms-git/
