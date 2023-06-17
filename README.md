@@ -1,5 +1,8 @@
 # Archer T4U Plus Driver for Linux (rtl8822bu)
-### _Finally_, one that doesn't randomly disconnect.
+### _Finally_, one that (_hopefully_) doesn't randomly disconnect.
+I'm sorry that I am even the one making this driver for this finniky ass device with **UNBELIEVABLY** no documentation available online about the underlying radio chipset. Almost every single repository/blog that describes this chip, describes it as an rtl8812au. The only driver that has worked on it with some tweaking (the one this is from), references it as an rtl8822bu. This has to be much closer to the truth than the prior option, but there are still some glitches that are incredibly hard to track down because the code currently doesn't mark them as glitches. The other problem is that TP-Link upgraded the T4U-Plus from `v1.0` to `v1.3` to `v1.8`. I have no idea what they changed between these versions; nobody does. It's very possible that they correspond to the `rtl8822au`, `rtl8822bu`, and `rtl8822cu` chipsets respectively, but I'm guessing.
+
+The chipset is known to have a problem with overheating. This isn't a problem of the chipset, _really_, as it's just doing a burst-mode-like operation strategy. Power trimming (`rtw_pwrtrim_enable`) is the first thing that really helps here from what I can tell. It enables the system to stop going over its heat limit, but because of that bursting nature it's always going to be a bit of a problem.
 
 <br/>
 
@@ -10,75 +13,15 @@ failing anymore. Check out `archer-t4u.conf` in the repo's root directory.
 ## Technically Supported Devices
 <details>
   <summary>
-    ASUS
-  </summary>
-
-* ASUS AC1300 USB-AC55 B1
-* ASUS U2
-* ASUS USB-AC53 Nano
-* ASUS USB-AC58
-</details>
-
-<details>
-  <summary>
-    Dlink
-  </summary>
-
-* Dlink - DWA-181
-* Dlink - DWA-182
-* Dlink - DWA-183 D Version
-* Dlink - DWA-185
-* Dlink - DWA-T185
-</details>
-
-<details>
-  <summary>
-    Edimax
-  </summary>
-
-* Edimax EW-7822ULC
-* Edimax EW-7822UTC
-* Edimax EW-7822UAD
-</details>
-
-<details>
-  <summary>
-    NetGear
-  </summary>
-
-* NetGear A6150
-</details>
-
-<details>
-  <summary>
     TP-Link
   </summary>
 
-* TP-Link Archer T3U
-* TP-Link Archer T3U Plus
-* TP-Link Archer T3U Nano
-* TP-Link Archer T4U V3
 * TP-Link Archer T4U Plus
 </details>
 
-<details>
-  <summary>
-    TRENDnet
-  </summary>
-
-* TRENDnet TEW-808UBM
-</details>
-
-<details>
-  <summary>
-    ZYXEL
-  </summary>
-
-* ZYXEL NWD6602
-</details>
 
 
-And more.
+Or anything with an 8822bu chipset.
 
 # How to use this kernel module
 * Ensure you have C compiler & toolchains, e.g. `build-essential` for Debian/Ubuntu, `base-devel` for Arch, etc.
