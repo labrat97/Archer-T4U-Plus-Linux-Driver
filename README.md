@@ -94,7 +94,6 @@ of the repository do:
 cp -r ./ /usr/src/rtl88x2bu-t4u
 dkms add -m rtl88x2bu -v t4u
 dkms autoinstall
-cp ./archer-t4u.conf /etc/modprobe.d/.
 ```
 ### Building module for other kernels
 You should know this is for advanced users only,
@@ -109,7 +108,6 @@ of the repository do:
 ```
 rm -r /usr/src/rtl88x2bu-t4u
 dkms uninstall -m rtl88x2bu -v t4u
-rm /etc/modprobe.d/archer-t4u.conf
 ```
 
 # USB 3.0 Support
@@ -117,7 +115,7 @@ You can try use `modprobe 88x2bu rtw_switch_usb_mode=1` to force the adapter run
 
 Notice: If you had already loaded the moduel, use `modprobe -r 88x2bu` to unload it first.
 
-If you want to force a given mode permanently (even when switching the adapter across devices), create the file `/etc/modprobe.d/99-RTL88x2BU.conf` with the following content:
+If you want to force a given mode permanently (even when switching the adapter across devices), create/edit the file `/etc/modprobe.d/99-RTL88x2BU.conf` with the following content:
 `options 88x2bu rtw_switch_usb_mode=1`
 
 
